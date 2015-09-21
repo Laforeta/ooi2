@@ -57,7 +57,7 @@ class KanColleAuth:
     def _get_ajax_token(self, dmm_token, token):
         self.headers.update({'Origin': 'https://www.dmm.com',
                              'Referer': dmm.LOGIN_URL,
-                             'Cookie': 'ckcy=1; check_open_login=1; check_down_login=1',
+                             'Cookie': 'ckcy=1; cklg=ja; check_open_login=1; check_down_login=1',
                              'DMM_TOKEN': dmm_token,
                              'X-Requested-With': 'XMLHttpRequest'})
         body = urlencode({'token': token})
@@ -96,7 +96,7 @@ class KanColleAuth:
         else:
             raise OoiAuthError('连接DMM认证服务器失败')
 
-        self.headers.update({'Cookie': 'ckcy=1; check_open_login=1; check_down_login=1; INT_SESID='+sesid,
+        self.headers.update({'Cookie': 'ckcy=1; cklg=ja; check_open_login=1; check_down_login=1; INT_SESID='+sesid,
                              'Referer': dmm.AUTH_URL})
         try:
             req = yield self.http_client.fetch(dmm.GAME_URL, headers=self.headers,
