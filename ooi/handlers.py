@@ -32,6 +32,8 @@ class MainHandler(RequestHandler):
                     self.redirect('/iframe')
                 elif play_mode == 3:
                     self.redirect('/poi')
+				elif play_mode == 4:
+					self.redirect('/api_link')
                 else:
                     self.redirect('/kancolle')
             except OoiAuthError as e:
@@ -104,6 +106,23 @@ class PoiGameHandler(RequestHandler):
             if scheme == 'https' and kcs_https_domain:
                 host = kcs_https_domain
             self.render('poi_game.html', scheme=scheme, host=host, token=token, starttime=starttime,
+                        world_ip=world_ip)
+        else:
+            self.clear_all_cookies()
+            self.redirect('/')
+
+class ApiLinkHandler(RequestHandler):
+    def get(self):
+        owner = to_str(self.get_secure_cookie('owner'))
+        world_ip = to_str(self.get_secure_cookie('world_ip'))
+        token = to_str(self.get_secure_cookie('token'))
+        starttime = to_str(self.get_secure_cookie('starttime'))
+        if owner and world_ip and token and starttime:
+            scheme = self.request.headers.get('X-Scheme', 'http')
+            host = kcs_domain if kcs_domain else self.request.headers.get('Host')
+            if scheme == 'https' and kcs_https_domain:
+                host = kcs_https_domain
+            self.render('api_link.html', scheme=scheme, host=host, token=token, starttime=starttime,
                         world_ip=world_ip)
         else:
             self.clear_all_cookies()

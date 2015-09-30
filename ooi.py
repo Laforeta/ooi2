@@ -26,6 +26,7 @@ if __name__ == "__main__":
                     ('/iframe', IFrameGameHandler),
                     ('/flash', IFrameFlashHandler),
                     ('/poi', PoiGameHandler),
+					('/api_link', ApiLinkHandler),
                     (r'/kcsapi/(.*)', ApiHandler),
                     ('/kcs/mainD2.swf', MainSwfHandler),
                     (r'/kcs/resources/image/world/.*(l|s)\.png', WorldImageHandler),

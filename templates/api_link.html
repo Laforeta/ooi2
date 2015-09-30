@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<SCRIPT LANGUAGE="JavaScript">
+function ClipBoard() 
+{
+holdtext.innerText = copytext.innerText;
+Copied = holdtext.createTextRange();
+Copied.execCommand("RemoveFormat");
+Copied.execCommand("Copy");
+}
+</script>
+
+  <div class="col-md-12">
+	<div style="border:2px dotted black;padding:2em;">
+		<SPAN ID="copytext" STYLE="height:150;width:162;background-color:pink">
+		Your API link for this session is {{ host }}/kcs/mainD2.swf?api_token={{ token }}, keep it safe!
+		</SPAN>
+		<TEXTAREA ID="holdtext" STYLE="display:none;">
+		</TEXTAREA>
+		<BUTTON onClick="ClipBoard();">Copy to Clipboard</BUTTON> 
+		<div id="notice">
+			<p>{% module Customize('notice', '欢迎各位提督使用OOI系统！') %}</p>
+		</div>
+    </div>
+    <div id="functions">
+      <a href="/relogin" class="btn btn-primary">重新登录</a>
+    </div>
+  </div>
+{% end %}
