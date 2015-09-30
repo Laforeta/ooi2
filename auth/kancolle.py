@@ -37,19 +37,19 @@ class KanColleAuth:
                                                request_timeout=self.request_timeout,
                                                proxy_host=proxy_host, proxy_port=proxy_port)
         except (CurlError, HTTPError):
-            raise OoiAuthError('连接DMM网站失败')
+            raise OoiAuthError('Error: Connection to dmm.com could not be established')
 
         body = native_str(req.body)
         m = self.dmm_token_pattern.search(body)
         if m:
             dmm_token = m.group(1)
         else:
-            raise OoiAuthError('获取DMM token失败')
+            raise OoiAuthError('Error: Failed to fetch dmm token')
         m = self.token_pattern.search(body)
         if m:
             token = m.group(1)
         else:
-            raise OoiAuthError('获取token失败')
+            raise OoiAuthError('Error: Failed to fetch token')
 
         return dmm_token, token
 
@@ -67,7 +67,7 @@ class KanColleAuth:
                                                request_timeout=self.request_timeout,
                                                proxy_host=proxy_host, proxy_port=proxy_port)
         except (CurlError, HTTPError):
-            raise OoiAuthError('DMM网站AJAX请求失败')
+            raise OoiAuthError('Error: Ajax token rejected')
         j = json_decode(native_str(req.body))
         return j['token'], j['login_id'], j['password']
 
@@ -90,11 +90,11 @@ class KanColleAuth:
             if m:
                 sesid = m.group(1)
             else:
-                raise OoiAuthError('DMM用户session获取失败')
+                raise OoiAuthError('Error: Failed to fetch session cookies')
         elif req.code == 200:
-            raise OoiAuthError('DMM用户认证失败，用户名或密码错误')
+            raise OoiAuthError('Error: Username or password is incorrect')
         else:
-            raise OoiAuthError('连接DMM认证服务器失败')
+            raise OoiAuthError('Error: Failed to authenticate user')
 
         self.headers.update({'Cookie': 'ckcy=1; check_open_login=1; check_down_login=1; INT_SESID='+sesid,
                              'Referer': dmm.AUTH_URL})
@@ -104,12 +104,12 @@ class KanColleAuth:
                                                request_timeout=self.request_timeout,
                                                proxy_host=proxy_host, proxy_port=proxy_port)
         except (CurlError, HTTPError):
-            raise OoiAuthError('连接游戏服务器失败')
+            raise OoiAuthError('Error: Failed to connect to game servers')
         m = self.osapi_url_pattern.search(native_str(req.body))
         if m:
             osapi_url = m.group(1)
         else:
-            raise OoiAuthError('DMM强制要求用户修改密码')
+            raise OoiAuthError('Error: Password reset detected, please change your password by directly visiting dmm.com')
         return osapi_url
 
     @coroutine
@@ -126,12 +126,12 @@ class KanColleAuth:
                                                request_timeout=self.request_timeout,
                                                proxy_host=proxy_host, proxy_port=proxy_port)
         except (CurlError, HTTPError):
-            raise OoiAuthError('获取服务器ID失败')
+            raise OoiAuthError('Error: Failed to obtain game server address')
         svdata = json_decode(native_str(req.body)[7:])
         if svdata['api_result'] == 1:
             world_id = svdata['api_data']['api_world_id']
         else:
-            raise OoiAuthError('服务器ID错误')
+            raise OoiAuthError('Error: Unrecognised server information')
         return world_id, st
 
 
@@ -156,13 +156,13 @@ class KanColleAuth:
                                                request_timeout=self.request_timeout,
                                                proxy_host=proxy_host, proxy_port=proxy_port)
         except (CurlError, HTTPError):
-            raise OoiAuthError('连接api_token服务器失败')
+            raise OoiAuthError('Error: Failed to send make_request')
         svdata = json_decode(native_str(req.body)[27:])
         if svdata[url]['rc'] != 200:
-            raise OoiAuthError('获取api_token失败')
+            raise OoiAuthError('Error: Failed to obtain API token')
         svdata = json_decode(svdata[url]['body'][7:])
         if svdata['api_result'] != 1:
-            raise OoiAuthError('获取api_token失败')
+            raise OoiAuthError('Error: Failed to obtain API token')
         return world_ip, svdata['api_token'], svdata['api_starttime']
 
     @coroutine
