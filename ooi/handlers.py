@@ -18,7 +18,7 @@ def init_cdns(request):
     global cdn_domains
     if cdn_domains is None:
         cdn_domains = OrderedDict()
-        cdn_domains['default'] = {'name': '不使用CDN加速 (较慢)', 'domain': request.headers.get('Host'), 'http': False}
+        cdn_domains['default'] = {'name': 'Default CDN (Cloudflare)', 'domain': request.headers.get('Host'), 'http': False}
 
 
 class MainHandler(RequestHandler):
@@ -64,7 +64,8 @@ class MainHandler(RequestHandler):
 
         else:
             self.render('login_form.html', error=True, play_mode=play_mode, cdn=cdn, cdn_domains=cdn_domains,
-                        message='请输入完整的登录ID和密码')
+                        message='Please enter your dmm.com ID and password')
+
 
 
 class NormalGameHandler(RequestHandler):
