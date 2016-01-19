@@ -92,7 +92,7 @@ class KanColleAuth:
             else:
                 raise OoiAuthError('Error: Failed to fetch session cookies')
         elif req.code == 200:
-            raise OoiAuthError('Error: Username or password is incorrect')
+            raise OoiAuthError('Authentication failed, bad username or password' if native_str(req.body).find(dmm.AJAX_TOKEN_URL) > 0 else 'Error: Password reset request detected, please visit dmm.com to reset your password')
         else:
             raise OoiAuthError('Error: Failed to authenticate user')
 
