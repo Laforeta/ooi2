@@ -40,7 +40,7 @@ class MainHandler(RequestHandler):
 
         else:
             self.render('login_form.html', error=True, play_mode=play_mode,
-                        message='请输入完整的登录ID和密码')
+                        message='Please enter your dmm.com ID and password')
 
 
 class NormalGameHandler(RequestHandler):
